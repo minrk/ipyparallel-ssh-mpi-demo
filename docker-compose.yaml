@@ -1,0 +1,45 @@
+services:
+  # init container to initialize volume permissions
+  # not realistic, but required for docker
+  init-ssh:
+    image: local
+    volumes:
+      - "dotssh:/home/demo/.ssh"
+      - "work:/home/demo/work"
+
+    user: root
+    command:
+      - sh
+      - "-c"
+      - |
+        chown demo:demo /home/demo/.ssh;
+        chmod 0700 /home/demo/.ssh;
+        chown demo:demo /home/demo/work;
+
+  remote:
+    hostname: remote
+    image: remote
+    build: ./remote
+    volumes:
+      - "dotssh:/home/demo/.ssh"
+    depends_on:
+      init-ssh:
+        condition: service_completed_successfully
+  local:
+    hostname: local
+    image: local
+    build: ./local
+    ports:
+      # expose container port on host :9999 for access
+      - "9999:9999"
+    depends_on:
+      init-ssh:
+        condition: service_completed_successfully
+    working_dir: "/home/demo/work"
+    volumes:
+      - "dotssh:/home/demo/.ssh"
+      - "work:/home/demo/work"
+
+volumes:
+  dotssh:
+  work:
