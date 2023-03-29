@@ -20,7 +20,6 @@ remote:
 - runs as an ssh server
 - has a user `demo` with password `whocares`
 - has packages `ipyparallel, mpi4py, openmpi`
-- `demo` has a profile `remotempi` with configuration to start engines with mpi
 
 local:
 
@@ -28,7 +27,7 @@ local:
 - has packages `ipyparallel, jupyterlab`
 - has a user `demo` with profile `remotempi`,
   configured to start the controller on `remote` via `ssh`,
-  and engines on `remote` via `sshproxy`
+  and engines on `remote` via `sshproxy` with `--engines=mpi`
 
 ## Build images and start the servers
 

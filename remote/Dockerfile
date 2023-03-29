@@ -17,15 +17,7 @@ RUN mamba install -y ipyparallel mpi4py openmpi
 
 # make the user we are going to use
 # with username `demo` and password `whocares`
-ENV USER=demo
-RUN useradd -m -s /bin/bash ${USER} -p "$(openssl passwd -1 whocares)"
-
-# create the 'remote' remotempi profile
-ENV HOME=/home/${USER}
-WORKDIR $HOME
-USER demo
-RUN ipython profile create --parallel remotempi
-COPY --chown=${USER}:0 ipcluster_config.py $HOME/.ipython/profile_remotempi/ipcluster_config.py
+RUN useradd -m -s /bin/bash demo -p "$(openssl passwd -1 whocares)"
 
 # run the ssh server as root
 USER root
